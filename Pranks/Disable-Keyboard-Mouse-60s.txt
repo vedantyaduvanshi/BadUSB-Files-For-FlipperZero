@@ -6,10 +6,6 @@ REM Target: Windows 10
 REM *REQUIREMENTS*
 REM admin required for disable function.
 
-REM *SETUP*
-NETCAT FOR WINDOWS - https://eternallybored.org/misc/netcat/netcat-win32-1.12.zip
-REM replace YOUR_IP_OR_DOMAIN_HERE with ncat server address and PORT_NUMBER.
-
 REM some setup for dukie script.
 DEFAULT_DELAY 100
 
