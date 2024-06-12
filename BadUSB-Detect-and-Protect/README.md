@@ -11,6 +11,7 @@ If there are 13 or more keypresses detected within 200 milliseconds it will paus
 1. Run the script and follow instructions
 2. A pop up will appear when monitoring is active and if a 'BadUSB' device is detected
 3. logs are found in 'usblogs' folder in the temp directory.
+4. Re-enable devices with this script with the re-enable option
 
 **REQUIREMENTS**
 
