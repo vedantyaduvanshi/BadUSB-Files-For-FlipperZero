@@ -15,79 +15,64 @@ you can play it manually - Rightclick - 'Run with Powershell' then minimize the 
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
-[Console]::BackgroundColor = "Black"
-Clear-Host
-[Console]::SetWindowSize(50, 20)
-[Console]::Title = "Mouse Click Recorder"
 
-while ($true){
+$Async = '[DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);'
+$Type = Add-Type -MemberDefinition $Async -name Win32ShowWindowAsync -namespace Win32Functions -PassThru
+$hwnd = (Get-Process -PID $pid).MainWindowHandle
+if($hwnd -ne [System.IntPtr]::Zero){
+    $Type::ShowWindowAsync($hwnd, 0)
+}
+else{
+    $Host.UI.RawUI.WindowTitle = 'hideme'
+    $Proc = (Get-Process | Where-Object { $_.MainWindowTitle -eq 'hideme' })
+    $hwnd = $Proc.MainWindowHandle
+    $Type::ShowWindowAsync($hwnd, 0)
+}
+
+# Create the form
+$form = New-Object System.Windows.Forms.Form
+$form.Text = "Mouse Recorder"
+$form.Size = New-Object System.Drawing.Size(300, 200)
+$form.StartPosition = "CenterScreen"
+$form.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon("C:\Windows\System32\msra.exe")
+$form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
+
+# Create the buttons
+$recordButton = New-Object System.Windows.Forms.Button
+$recordButton.Text = "Record"
+$recordButton.Location = New-Object System.Drawing.Point(50, 50)
+$recordButton.Size = New-Object System.Drawing.Size(75, 30)
+
+$stopButton = New-Object System.Windows.Forms.Button
+$stopButton.Text = "Stop"
+$stopButton.Location = New-Object System.Drawing.Point(150, 50)
+$stopButton.Size = New-Object System.Drawing.Size(75, 30)
+$stopButton.Enabled = $false
+
+$playButton = New-Object System.Windows.Forms.Button
+$playButton.Text = "Play"
+$playButton.Location = New-Object System.Drawing.Point(50, 100)
+$playButton.Size = New-Object System.Drawing.Size(75, 30)
+
+$deleteButton = New-Object System.Windows.Forms.Button
+$deleteButton.Text = "Delete"
+$deleteButton.Location = New-Object System.Drawing.Point(150, 100)
+$deleteButton.Size = New-Object System.Drawing.Size(75, 30)
+
+# Add buttons to the form
+$form.Controls.Add($recordButton)
+$form.Controls.Add($stopButton)
+$form.Controls.Add($playButton)
+$form.Controls.Add($deleteButton)
 
 
-    $header = "
-    ===============================================
-    
-    ===========  MOUSE CLICK RECORDER  ============
-    
-    ===============================================
-    
-    OPTIONS :
-    
-    1. Record Mouse Clicks
-    2. Play Mouse Clicks
-    3. Clean Up Temp Files & Exit
-    4. Exit
-    "
-    cls
-    Write-Host $header -ForegroundColor Cyan
-    $option = Read-Host "Please Select an Option "
-    
-    if ($option -eq 1){
-        $sequencefile = "$env:TEMP\sequence.ps1"
-        $fullPath = (Get-Item $sequencefile).FullName
-        $sequencefileforc = $fullPath -replace '\\', '\\'
-        Write-Host "Creating a file.."
-        
-        "# ===================================== CLICK SEQUENCER ========================================" | Out-File -FilePath $sequencefile -Force 
-        "Add-Type -AssemblyName System.Windows.Forms" | Out-File -FilePath $sequencefile -Append -Force
+$recordButton.Add_Click({
 
-'Add-Type @"
-    using System;
-    using System.Runtime.InteropServices;
-    public class MouseSimulator {
-        [DllImport("user32.dll",CharSet=CharSet.Auto, CallingConvention=CallingConvention.StdCall)]
-        public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
-        
-        public const int MOUSEEVENTF_LEFTDOWN = 0x02;
-        public const int MOUSEEVENTF_LEFTUP = 0x04;
-        public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
-        public const int MOUSEEVENTF_RIGHTUP = 0x10;
-        public const int MOUSEEVENTF_WHEEL = 0x0800;
-
-        public static void LeftClick() {
-            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-            System.Threading.Thread.Sleep(10);
-            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-        }
-
-        public static void RightClick() {
-            mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
-            System.Threading.Thread.Sleep(10);
-            mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
-        }
-
-        public static void ScrollUp() {
-            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, 120, 0);
-        }
-
-        public static void ScrollDown() {
-            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
-        }
-    }
-"@' | Out-File -FilePath $sequencefile -Append -Force
-        
-        Write-Host "Setting up..." -ForegroundColor Yellow
-        sleep 1
-
+    $stopButton.Enabled = $true
+    $recordButton.Enabled = $false
+    $sequencefile = "$env:TEMP/sequence.ps1"
+    $fullPath = (Get-Item $sequencefile).FullName
+    $sequencefileforc = $fullPath -replace '\\', '\\'
 Add-Type @"
 using System;
 using System.IO;
@@ -143,11 +128,11 @@ public class MouseHook
             string message;
             if (delta > 0)
             {
-                message = "[MouseSimulator]::ScrollUp()";
+                message = "[MouseSimulator]::ScrollUp();Sleep -M 100";
             }
             else if (delta < 0)
             {
-                message = "[MouseSimulator]::ScrollDown()";
+                message = "[MouseSimulator]::ScrollDown();Sleep -M 100";
             }
             else
             {
@@ -167,11 +152,56 @@ public class MouseHook
 }
 "@
 
-# Start the mouse hook
 [MouseHook]::Start()
 
-function MouseState {
+$job = {
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+    $global:recording = $true
+    $sequencefile = "$env:TEMP/sequence.ps1"
+    
+    "# ===================================== CLICK SEQUENCER ========================================" | Out-File -FilePath $sequencefile -Force 
+    "Add-Type -AssemblyName System.Windows.Forms" | Out-File -FilePath $sequencefile -Append -Force
 
+'Add-Type @"
+    using System;
+    using System.Runtime.InteropServices;
+    public class MouseSimulator {
+        [DllImport("user32.dll",CharSet=CharSet.Auto, CallingConvention=CallingConvention.StdCall)]
+        public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+        
+        public const int MOUSEEVENTF_LEFTDOWN = 0x02;
+        public const int MOUSEEVENTF_LEFTUP = 0x04;
+        public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+        public const int MOUSEEVENTF_RIGHTUP = 0x10;
+        public const int MOUSEEVENTF_WHEEL = 0x0800;
+
+        public static void LeftClick() {
+            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+            System.Threading.Thread.Sleep(10);
+            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        }
+
+        public static void RightClick() {
+            mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
+            System.Threading.Thread.Sleep(10);
+            mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+        }
+
+        public static void ScrollUp() {
+            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, 120, 0);
+        }
+
+        public static void ScrollDown() {
+            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
+        }
+    }
+"@' | Out-File -FilePath $sequencefile -Append -Force
+        
+        Write-Host "Setting up..." -ForegroundColor Yellow
+        sleep 1
+
+function MouseState {
     $previousState = [System.Windows.Forms.Control]::MouseButtons
     $previousPosition = [System.Windows.Forms.Cursor]::Position
     $lastClickTime = $null
@@ -201,8 +231,6 @@ function MouseState {
                     "[MouseSimulator]::${button}Click()" | Out-File -FilePath $sequencefile -Append -Force
                     "Start-Sleep -Milliseconds 50" | Out-File -FilePath $sequencefile -Append -Force
                     "[MouseSimulator]::${button}Click()" | Out-File -FilePath $sequencefile -Append -Force
-                    Write-Host "Interval Time: $interval seconds" -ForegroundColor DarkGray
-                    Write-Host "Double-Click Detected at X:$($mousePosition.X) Y:$($mousePosition.Y)!" -ForegroundColor DarkGray
                     $lastClickTime = $currentTime
                     $singleClickDetected = $false
                 } else {
@@ -222,8 +250,6 @@ function MouseState {
                 "[System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point($($mousePosition.X), $($mousePosition.Y))" | Out-File -FilePath $sequencefile -Append -Force
                 "Start-Sleep -Milliseconds 200" | Out-File -FilePath $sequencefile -Append -Force
                 "[MouseSimulator]::${button}Click()" | Out-File -FilePath $sequencefile -Append -Force
-                Write-Host "Interval Time: $interval seconds" -ForegroundColor DarkGray
-                Write-Host "Mouse Click Detected at X:$($lastClickPosition.X) Y:$($lastClickPosition.Y)! Button: $button" -ForegroundColor DarkGray
                 $lastClickTime = $null
                 $singleClickDetected = $false
             }
@@ -236,7 +262,6 @@ function MouseState {
             $previousPosition = $currentPosition
             "Start-Sleep -Milliseconds $interval" | Out-File -FilePath $sequencefile -Append -Force
             "[System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point($($currentPosition.X), $($currentPosition.Y))" | Out-File -FilePath $sequencefile -Append -Force
-            Write-Host "Mouse Moved to X:$($currentPosition.X) Y:$($currentPosition.Y)" -ForegroundColor DarkGray
         }
 
         Start-Sleep -Milliseconds 20
@@ -244,41 +269,35 @@ function MouseState {
 }
 
 Write-Host "Recording..." -ForegroundColor Red
-while ($true) {
+while ($recording -eq $true) {
     MouseState
-}  
-
-[MouseHook]::Stop()
-     
-    }
-    
-    if ($option -eq 2){
-        Write-Host "Playing..." -ForegroundColor Yellow
-        Get-Content -Path $sequencefile -Raw | iex
-        Write-Host "Succeded!" -ForegroundColor Green
-        sleep 3
-    
-    }
-    
-    if ($option -eq 3){
-        Write-Host "Cleaning up..." -ForegroundColor yellow
-        sleep 3
-        $sequencefile = "$env:TEMP/sequence.ps1"
-        rm -Path $sequencefile -Force
-        Write-Host "Closing.." -ForegroundColor Red
-        sleep 3
-        exit
-    }
-    
-    if ($option -eq 4){
-        Write-Host "Closing.." -ForegroundColor Red
-        sleep 3
-        exit
-    }
-    
-    else{
-        Write-Host "Please choose a valid option." -ForegroundColor Red
-        sleep 3
-    }
-
+} 
+ 
 }
+
+Start-Job -ScriptBlock $job -Name record
+    
+})
+
+$stopButton.Add_Click({
+    Stop-Job -Name record
+    $global:recording = $false
+    $stopButton.Enabled = $false
+    $recordButton.Enabled = $true
+    [MouseHook]::Stop() 
+})
+    
+$playButton.Add_Click({
+    $playButton.Enabled = $false
+    $sequencefile = "$env:TEMP/sequence.ps1"
+    Get-Content -Path $sequencefile -Raw | iex
+    $playButton.Enabled = $true
+})
+    
+$deleteButton.Add_Click({
+    sleep 3
+    $sequencefile = "$env:TEMP/sequence.ps1"
+    rm -Path $sequencefile -Force
+})
+
+[void]$form.ShowDialog()
