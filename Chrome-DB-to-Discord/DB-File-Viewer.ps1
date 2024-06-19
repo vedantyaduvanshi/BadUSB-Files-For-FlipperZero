@@ -4,7 +4,7 @@ SYNOPSIS
 This script uses sqlite to enumerate database files and return table information to the user.
 
 Option 1
-Scrape browser files for database files, extract information and display results
+Scrape this computer's browser directories for database files, extract information and display results
 
 Option 2
 Specify a .db OR .sqlite file to display information 
