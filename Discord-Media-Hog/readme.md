@@ -17,10 +17,10 @@ Also opens a powershell command line interface through discord.
 
 -SETUP THE SCRIPT
 
------ Option 1 ----- (token placed in ps1 file) [unsafe]
-1. Copy the token into the script directly below.
+----- Option 1 ----- (token placed in ps1 file)
+1. Copy the token into the Bad USB txt file directly
 
------ Option 2 ----- (token hosted online) [slightly safer]
+----- Option 2 ----- (token hosted online) 
 1. Create a file on Pastebin or Github with the content below - Supply your token and optional webhooks (include braces)
 {
   "tk": "TOKEN_HERE",
