@@ -3,6 +3,7 @@
 Uses a Discord bot to send system information, a stream desktop and webcam screenshots
 Also opens a powershell command line interface through discord.
 
+![scampwn](https://github.com/beigeworm/BadUSB-Files-For-FlipperZero/assets/93350544/ffcc08a2-42d6-4ccd-8b3c-9534bea74174)
 
 **SETUP**
 
