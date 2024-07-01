@@ -16,6 +16,7 @@ Also opens a powershell command line interface through discord.
 6. On 'Bot' page click 'Reset Token' and copy the token.
 
 -SETUP THE SCRIPT
+
 ----- Option 1 ----- (token placed in ps1 file) [unsafe]
 1. Copy the token into the script directly below.
 
@@ -34,3 +35,4 @@ Also opens a powershell command line interface through discord.
 
 - The Discord bot you use must be in one server only
 - You can specify webhooks to send duplicate files to other channels on another server (OPTIONAL)
+
