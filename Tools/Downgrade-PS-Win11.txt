@@ -1,5 +1,4 @@
-REM Title: beigeworm's Tool Suite GUI
-REM Author: @beigeworm
+REM Title: Windows 11 Terminal Downgrade
 REM Description: Downgrade the default command prompt of Windows 11 to use Conhost again. Afterwards PowerShell can be used with paramters like "-WindowStyle Hidden" again.
 REM Target: Windows 11
 
