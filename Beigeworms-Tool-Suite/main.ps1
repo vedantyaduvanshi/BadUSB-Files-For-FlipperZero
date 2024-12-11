@@ -1,3 +1,21 @@
+<#
+======================================= Beigeworm's Toolset GUI ==========================================
+
+SYNOPSIS
+All useful tools in one place.
+A selection of Powershell tools from this repo can be ran from this script.
+
+USAGE
+1. Replace the URLS and TOKENS below. (they can also be added by running the script)
+2. Run the script and follow options in the GUI
+
+INFO
+Closing this script will NOT close any scripts that were started from this script.
+Any background/hidden scripts eg. C2 clients will keep running.
+
+raw shortlink - https://is.gd/bwtoolset
+
+#>
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName Microsoft.VisualBasic
