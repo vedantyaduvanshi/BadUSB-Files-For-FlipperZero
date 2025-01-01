@@ -249,7 +249,7 @@ $commonResolutions = @("1280x720","1280x800","1280x1024","1366x768","1440x900","
 $vmChecks = @{"VMwareTools" = "HKLM:\SOFTWARE\VMware, Inc.\VMware Tools";"VMwareMouseDriver" = "C:\WINDOWS\system32\drivers\vmmouse.sys";"VMwareSharedFoldersDriver" = "C:\WINDOWS\system32\drivers\vmhgfs.sys";"SystemBiosVersion" = "HKLM:\HARDWARE\Description\System\SystemBiosVersion";"VBoxGuestAdditions" = "HKLM:\SOFTWARE\Oracle\VirtualBox Guest Additions";"VideoBiosVersion" = "HKLM:\HARDWARE\Description\System\VideoBiosVersion";"VBoxDSDT" = "HKLM:\HARDWARE\ACPI\DSDT\VBOX__";"VBoxFADT" = "HKLM:\HARDWARE\ACPI\FADT\VBOX__";"VBoxRSDT" = "HKLM:\HARDWARE\ACPI\RSDT\VBOX__";"SystemBiosDate" = "HKLM:\HARDWARE\Description\System\SystemBiosDate";}
 $taskManagers = @("taskmgr","procmon","procmon64","procexp","procexp64","perfmon","perfmon64","resmon","resmon64","ProcessHacker")
 $currentResolution = "$Width`x$Height"
-if (!($commonResolutions -contains $currentResolution)) {$rescheck = "Resolution Check : PASS"}else{$rescheck = "Resolution Check : FAIL"}
+if (!($commonResolutions -contains $currentResolution)) {$rescheck = "Resolution Check : FAIL"}else{$rescheck = "Resolution Check : PASS"}
 if ($vmManufacturers -contains $manufacturer) {$ManufaturerCheck = "Manufaturer Check : FAIL"}else{$ManufaturerCheck = "Manufaturer Check : PASS"}
 if ($vmModels -contains $model) {$ModelCheck = "Model Check : FAIL"}else{$ModelCheck = "Model Check : PASS"}
 if ($vmBios -contains $bios) {$BiosCheck = "Bios Check : FAIL"}else{$BiosCheck = "Bios Check : PASS"}
